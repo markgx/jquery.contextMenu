@@ -12,14 +12,21 @@
 // This plugin is dual-licensed under the GNU General Public License
 //   and the MIT License and is copyright A Beautiful Site, LLC.
 //
-if(jQuery)( function() {
+if(jQuery)(function() {
+	var defaults = {
+		inSpeed: 150,
+		outSpeed: 75
+	};
+
 	$.extend($.fn, {
-		
 		contextMenu: function(o, callback) {
 			// Defaults
-			if( o.menu == undefined ) return false;
-			if( o.inSpeed == undefined ) o.inSpeed = 150;
-			if( o.outSpeed == undefined ) o.outSpeed = 75;
+			if (o.menu == undefined) {
+				return false;
+			}
+
+			o = $.extend(defaults, o);
+
 			// 0 needs to be -1 for expected results (no fade)
 			if( o.inSpeed == 0 ) o.inSpeed = -1;
 			if( o.outSpeed == 0 ) o.outSpeed = -1;
@@ -155,7 +162,6 @@ if(jQuery)( function() {
 					var d = o.split(',');
 					for( var i = 0; i < d.length; i++ ) {
 						$(this).find('A[href="' + d[i] + '"]').parent().addClass('disabled');
-						
 					}
 				}
 			});
@@ -206,6 +212,5 @@ if(jQuery)( function() {
 			});
 			return( $(this) );
 		}
-		
 	});
 })(jQuery);
