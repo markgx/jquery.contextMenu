@@ -15,17 +15,18 @@
 if(jQuery)(function() {
 	var defaults = {
 		inSpeed: 150,
-		outSpeed: 75
+		outSpeed: 75,
+		buttons: ['right']
 	};
 
 	$.extend($.fn, {
-		contextMenu: function(o, callback) {
+		contextMenu: function(opts, callback) {
 			// Defaults
+			var o = $.extend(defaults, opts);
+
 			if (o.menu == undefined) {
 				return false;
 			}
-
-			o = $.extend(defaults, o);
 
 			// 0 needs to be -1 for expected results (no fade)
 			if( o.inSpeed == 0 ) o.inSpeed = -1;
@@ -44,7 +45,20 @@ if(jQuery)(function() {
 						e.stopPropagation();
 						var srcElement = $(this);
 						$(this).unbind('mouseup');
-						if( evt.button == 2 ) {
+
+						// check if defined trigger button was clicked
+						var triggerButtons = [];
+						for (var i = 0; i < o.buttons.length; i++) {
+							if (o.buttons[i] == 'left') {
+								triggerButtons.push(0);
+							} else if (o.buttons[i] == 'middle') {
+								triggerButtons.push(1);
+							} else if (o.buttons[i] == 'right') {
+								triggerButtons.push(2);
+							}
+						}
+
+						if ($.inArray(evt.button, triggerButtons) != -1) {
 							// Hide context menus that may be showing
 							$(".contextMenu").hide();
 							// Get this context menu
