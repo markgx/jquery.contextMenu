@@ -38,6 +38,8 @@ if(jQuery)(function() {
 				// Add contextMenu class
 				$('#' + o.menu).addClass('contextMenu');
 
+				el.data('menu', o.menu);
+
 				$(this).mouseup(function(e) {
 					e.stopPropagation();
 					var srcElement = $(this);
@@ -58,10 +60,10 @@ if(jQuery)(function() {
 						// Hide context menus that may be showing
 						$(".contextMenu").hide();
 						// Get this context menu
-						var menu = $('#' + o.menu);
-						
+						var menu = $('#' + srcElement.data('menu'));
+
 						if( $(el).hasClass('disabled') ) return false;
-						
+
 						// Detect mouse position
 						var d = {}, x, y;
 						if( self.innerHeight ) {
