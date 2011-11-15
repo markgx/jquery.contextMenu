@@ -38,7 +38,10 @@ if(jQuery)(function() {
 				// Add contextMenu class
 				$('#' + o.menu).addClass('contextMenu');
 
-				el.data('menu', o.menu);
+				el.data('contextMenu', {
+					menu: o.menu,
+					callback: callback
+				});
 
 				$(this).mouseup(function(e) {
 					e.stopPropagation();
@@ -60,7 +63,7 @@ if(jQuery)(function() {
 						// Hide context menus that may be showing
 						$(".contextMenu").hide();
 						// Get this context menu
-						var menu = $('#' + srcElement.data('menu'));
+						var menu = $('#' + srcElement.data('contextMenu').menu);
 
 						if( $(el).hasClass('disabled') ) return false;
 
@@ -126,12 +129,14 @@ if(jQuery)(function() {
 						});
 						
 						// When items are selected
-						$('#' + o.menu).find('A').unbind('click');
-						$('#' + o.menu).find('LI:not(.disabled) A').click( function() {
+						$('#' + el.data('contextMenu').menu).find('A').unbind('click');
+						$('#' + el.data('contextMenu').menu).find('LI:not(.disabled) A').click( function() {
 							$(document).off('click.contextMenu').off('keypress.contextMenu');
 							$(".contextMenu").hide();
 							// Callback
-							if( callback ) callback( $(this).attr('href').substr(1), $(srcElement), {x: x - offset.left, y: y - offset.top, docX: x, docY: y} );
+							if (el.data('contextMenu').callback) {
+								el.data('contextMenu').callback($(this).attr('href').substr(1), $(srcElement), { x: x - offset.left, y: y - offset.top, docX: x, docY: y });
+							}
 							return false;
 						});
 						
@@ -148,16 +153,16 @@ if(jQuery)(function() {
 
 				// Disable text selection
 				if( $.browser.mozilla ) {
-					$('#' + o.menu).each( function() { $(this).css({ 'MozUserSelect' : 'none' }); });
+					$('#' + el.data('contextMenu').menu).each( function() { $(this).css({ 'MozUserSelect' : 'none' }); });
 				} else if( $.browser.msie ) {
-					$('#' + o.menu).each( function() { $(this).bind('selectstart.disableTextSelect', function() { return false; }); });
+					$('#' + el.data('contextMenu').menu).each( function() { $(this).bind('selectstart.disableTextSelect', function() { return false; }); });
 				} else {
-					$('#' + o.menu).each(function() { $(this).bind('mousedown.disableTextSelect', function() { return false; }); });
+					$('#' + el.data('contextMenu').menu).each(function() { $(this).bind('mousedown.disableTextSelect', function() { return false; }); });
 				}
 				// Disable browser context menu (requires both selectors to work in IE/Safari + FF/Chrome)
 				$(el).add($('UL.contextMenu')).bind('contextmenu', function() { return false; });
-				
 			});
+
 			return $(this);
 		},
 		
